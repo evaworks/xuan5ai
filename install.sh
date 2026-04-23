@@ -18,8 +18,17 @@ echo "========================================="
 echo ""
 
 echo "[1/6] 安装必要软件..."
-apt-get update -qq
-apt-get install -y -qq nginx certbot python3-certbot-nginx wget > /dev/null 2>&1
+if ! command -v nginx &> /dev/null; then
+    apt-get update -qq
+    apt-get install -y -qq nginx certbot python3-certbot-nginx wget > /dev/null 2>&1
+else
+    echo "  Nginx 已安装，跳过"
+fi
+if ! command -v certbot &> /dev/null; then
+    apt-get install -y -qq certbot python3-certbot-nginx > /dev/null 2>&1
+else
+    echo "  Certbot 已安装，跳过"
+fi
 
 echo "[2/6] 创建网站目录..."
 mkdir -p /var/www/xuanwu
