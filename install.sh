@@ -7,8 +7,8 @@ echo "  玄武科技 - 一键部署脚本"
 echo "========================================="
 echo ""
 
-DOMAIN=${1:-"xuanwu.example.com"}
-EMAIL=${2:-"admin@xuanwu.example.com"}
+DOMAIN=${1:-"xuan5ai.com"}
+EMAIL=${2:-"admin@xuan5ai.com"}
 GIT_REPO=${3:-""}
 PORT=${4:-5173}
 
