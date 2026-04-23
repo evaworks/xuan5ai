@@ -7,29 +7,24 @@ echo "  玄武科技 - 一键部署脚本"
 echo "========================================="
 echo ""
 
-DOMAIN=${1:-"xuan5ai.com"}
-EMAIL=${2:-"admin@xuan5ai.com"}
-GIT_REPO=${3:-""}
-PORT=${4:-5173}
+REPO=${1:-"yourusername/xuanwu-site"}
+VERSION=${2:-"latest"}
+DOMAIN=${3:-"xuan5ai.com"}
+EMAIL=${4:-"admin@xuan5ai.com"}
 
 echo "[1/6] 安装必要软件..."
 apt-get update -qq
-apt-get install -y -qq nginx certbot python3-certbot-nginx git > /dev/null 2>&1
+apt-get install -y -qq nginx certbot python3-certbot-nginx wget > /dev/null 2>&1
 
 echo "[2/6] 创建网站目录..."
 mkdir -p /var/www/xuanwu
 cd /var/www/xuanwu
 
-echo "[3/6] 拉取静态文件..."
-if [ -n "$GIT_REPO" ]; then
-    if [ -d ".git" ]; then
-        git pull
-    else
-        git clone "$GIT_REPO" .
-    fi
-else
-    echo "  未指定仓库，请在 /var/www/xuanwu 手动放置网站文件"
-fi
+echo "[3/6] 下载并解压 dist 文件..."
+LATEST_URL="https://github.com/$REPO/releases/download/$VERSION/dist.tar.gz"
+wget -q "$LATEST_URL" -O dist.tar.gz
+tar -xzf dist.tar.gz --strip-components=1
+rm -f dist.tar.gz
 
 echo "[4/6] 配置 Nginx..."
 cat > /etc/nginx/sites-available/xuanwu <<EOF
