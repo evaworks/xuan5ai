@@ -1,71 +1,52 @@
 import { useState, useEffect } from 'react'
-import './index.css'
 
 const products = [
   {
     id: 1,
-    name: '玄武云主机',
-    category: 'cloud',
-    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop',
-    description: '高性能云服务器，提供弹性计算资源',
-    price: '¥299/月起'
-  },
-  {
-    id: 2,
-    name: '玄武安全网关',
-    category: 'security',
-    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=300&fit=crop',
-    description: '企业级网络安全防护解决方案',
-    price: '¥5999/月起'
-  },
-  {
-    id: 3,
-    name: '玄武数据湖',
-    category: 'data',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-    description: '大规模数据存储与分析平台',
-    price: '¥899/月起'
-  },
-  {
-    id: 4,
-    name: '玄武AI助手',
-    category: 'ai',
+    name: 'AI智能换脸',
+    category: 'core',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop',
-    description: '智能AI驱动企业数字化转型',
-    price: '¥1999/月起'
-  },
-  {
-    id: 5,
-    name: '玄武协同办公',
-    category: 'office',
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
-    description: '高效团队协作与项目管理工具',
+    description: '新一代AI换脸技术，一键生成自然逼真的换脸效果',
     price: '¥99/月起'
   },
   {
-    id: 6,
-    name: '玄武物联网平台',
-    category: 'iot',
-    image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&h=300&fit=crop',
-    description: '连接万物，构建智能物联网生态',
-    price: '¥1299/月起'
+    id: 2,
+    name: '视频换脸引擎',
+    category: 'video',
+    image: 'https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?w=400&h=300&fit=crop',
+    description: '支持视频动态换脸，高清画质输出，流畅自然',
+    price: '¥299/月起'
+  },
+  {
+    id: 3,
+    name: '图片批量换脸',
+    category: 'batch',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
+    description: '批量处理图片换脸，一键生成，提升工作效率',
+    price: '¥199/月起'
+  },
+  {
+    id: 4,
+    name: '直播换脸助手',
+    category: 'live',
+    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=300&fit=crop',
+    description: '实时直播换脸，支持多种风格，即开即用',
+    price: '¥599/月起'
   },
 ]
 
 const categories = [
   { id: 'all', name: '全部产品' },
-  { id: 'cloud', name: '云计算' },
-  { id: 'security', name: '安全服务' },
-  { id: 'ai', name: 'AI智能' },
-  { id: 'office', name: '协同办公' },
-  { id: 'data', name: '大数据' },
-  { id: 'iot', name: '物联网' },
+  { id: 'core', name: 'AI换脸' },
+  { id: 'video', name: '视频处理' },
+  { id: 'batch', name: '批量处理' },
+  { id: 'live', name: '直播助手' },
 ]
 
 function App() {
   const [activeCategory, setActiveCategory] = useState('all')
   const [scrolled, setScrolled] = useState(false)
-  const [formData, setFormData] = useState({ name: '', phone: '', message: '' })
+  
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -77,11 +58,7 @@ function App() {
     ? products 
     : products.filter(p => p.category === activeCategory)
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    alert('感谢您的留言，我们会尽快与您联系！')
-    setFormData({ name: '', phone: '', message: '' })
-  }
+  
 
   return (
     <div className="min-h-screen bg-xuanwu-darker">
@@ -241,12 +218,9 @@ function App() {
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2 group-hover:text-xuanwu-accent transition-colors">{product.name}</h3>
                   <p className="text-xuanwu-muted text-sm mb-4">{product.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xuanwu-accent font-semibold">{product.price}</span>
-                    <button className="px-4 py-2 bg-xuanwu-accent/20 text-xuanwu-accent rounded-lg hover:bg-xuanwu-accent hover:text-xuanwu-darker transition-colors text-sm">
-                      了解更多
-                    </button>
-                  </div>
+                  {/* <button className="px-4 py-2 bg-xuanwu-accent/20 text-xuanwu-accent rounded-lg hover:bg-xuanwu-accent hover:text-xuanwu-darker transition-colors text-sm">
+                    了解更多
+                  </button> */}
                 </div>
               </div>
             ))}
@@ -265,7 +239,7 @@ function App() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid lg:grid-cols-1 gap-12">
             {/* 联系信息 */}
             <div className="space-y-8">
               <div className="p-8 bg-xuanwu-darker rounded-2xl border border-gray-800">
@@ -274,12 +248,11 @@ function App() {
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-full bg-xuanwu-accent/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-2xl">📞</span>
+                      <span className="text-2xl">👥</span>
                     </div>
                     <div>
-                      <div className="text-sm text-xuanwu-muted mb-1">联系电话</div>
-                      <div className="text-xuanwu-text">400-888-8888</div>
-                      <div className="text-xuanwu-text">010-8888-8888</div>
+                      <div className="text-sm text-xuanwu-muted mb-1">Telegram 群组</div>
+                      <a href="https://t.me/xuanwuA" target="_blank" rel="noopener noreferrer" className="text-xuanwu-text hover:text-xuanwu-accent transition-colors">@xuanwuA</a>
                     </div>
                   </div>
 
@@ -301,8 +274,9 @@ function App() {
                       <span className="text-2xl">🕐</span>
                     </div>
                     <div>
-                      <div className="text-sm text-xuanwu-muted mb-1">工作时间</div>
-                      <div className="text-xuanwu-text">周一至周五 9:00 - 18:00</div>
+                      <div className="text-sm text-xuanwu-muted mb-1">服务时间</div>
+                      <div className="text-xuanwu-text">24 小时在线</div>
+                      <div className="text-xuanwu-text text-sm">专业服务 · 及时响应 · 售后无忧</div>
                     </div>
                   </div>
                 </div>
@@ -311,51 +285,7 @@ function App() {
               
             </div>
 
-            {/* 联系表单 */}
-            <div className="p-8 bg-xuanwu-darker rounded-2xl border border-gray-800">
-              <h3 className="text-xl font-semibold mb-6 text-xuanwu-accent">在线留言</h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm text-xuanwu-muted mb-2">您的姓名</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full px-4 py-3 bg-xuanwu-dark border border-gray-700 rounded-lg text-xuanwu-text focus:border-xuanwu-accent focus:outline-none transition-colors"
-                    placeholder="请输入您的姓名"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-xuanwu-muted mb-2">联系电话</label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="w-full px-4 py-3 bg-xuanwu-dark border border-gray-700 rounded-lg text-xuanwu-text focus:border-xuanwu-accent focus:outline-none transition-colors"
-                    placeholder="请输入您的手机号"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-xuanwu-muted mb-2">留言内容</label>
-                  <textarea
-                    required
-                    rows="5"
-                    value={formData.message}
-                    onChange={(e) => setFormData({...formData, message: e.target.value})}
-                    className="w-full px-4 py-3 bg-xuanwu-dark border border-gray-700 rounded-lg text-xuanwu-text focus:border-xuanwu-accent focus:outline-none transition-colors resize-none"
-                    placeholder="请输入您想咨询的内容..."
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="w-full py-4 bg-xuanwu-accent text-xuanwu-darker font-semibold rounded-lg hover:bg-yellow-200 transition-colors"
-                >
-                  提交留言
-                </button>
-              </form>
-            </div>
+            
           </div>
         </div>
       </section>
@@ -398,15 +328,15 @@ function App() {
 
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-800">
             <p className="text-xuanwu-muted text-sm mb-4 md:mb-0">
-              © 2024 玄武科技 版权所有 | 京ICP备12345678号
+              © 2026 玄武科技 版权所有
             </p>
-            <div className="flex gap-4">
+            {/* <div className="flex gap-4">
               {['微博', '微信', '知乎'].map((social, i) => (
                 <a key={i} href="#" className="text-xuanwu-muted hover:text-xuanwu-accent transition-colors text-sm">
                   {social}
                 </a>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </footer>
