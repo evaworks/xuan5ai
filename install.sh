@@ -2,10 +2,10 @@
 
 set -e
 
-REPO="evaworks/xuan5ai"
-VERSION="latest"
-DOMAIN="xuan5ai.com"
-EMAIL="admin@xuan5ai.com"
+DOMAIN=${1:-"xuan5ai.com"}
+EMAIL=${2:-"admin@xuan5ai.com"}
+REPO=${3:-"evaworks/xuan5ai"}
+VERSION=${4:-"latest"}
 
 if [ "$(id -u)" -ne 0 ]; then
    echo "请使用 sudo 或 root 运行此脚本"
