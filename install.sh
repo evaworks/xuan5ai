@@ -20,17 +20,15 @@ echo "[2/6] 创建网站目录..."
 mkdir -p /var/www/xuanwu
 cd /var/www/xuanwu
 
-echo "[3/6] 拉取代码..."
+echo "[3/6] 拉取静态文件..."
 if [ -n "$GIT_REPO" ]; then
     if [ -d ".git" ]; then
         git pull
     else
         git clone "$GIT_REPO" .
     fi
-    npm install
-    npm run build
 else
-    echo "  未指定仓库，请在 /var/www/xuanwu 手动放置网站代码"
+    echo "  未指定仓库，请在 /var/www/xuanwu 手动放置网站文件"
 fi
 
 echo "[4/6] 配置 Nginx..."
@@ -39,7 +37,7 @@ server {
     listen 80;
     server_name $DOMAIN;
 
-    root /var/www/xuanwu/dist;
+    root /var/www/xuanwu;
     index index.html;
 
     gzip on;
