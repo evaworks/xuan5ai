@@ -2,15 +2,20 @@
 
 set -e
 
-echo "========================================="
-echo "  玄武科技 - 一键部署脚本"
-echo "========================================="
-echo ""
-
 REPO=${1:-"yourusername/xuanwu-site"}
 VERSION=${2:-"latest"}
 DOMAIN=${3:-"xuan5ai.com"}
 EMAIL=${4:-"admin@xuan5ai.com"}
+
+if [ "$(id -u)" -ne 0 ]; then
+   echo "请使用 sudo 或 root 运行此脚本"
+   exit 1
+fi
+
+echo "========================================="
+echo "  玄武科技 - 一键部署脚本"
+echo "========================================="
+echo ""
 
 echo "[1/6] 安装必要软件..."
 apt-get update -qq
@@ -64,7 +69,7 @@ echo ""
 echo "========================================="
 echo "  部署完成！"
 echo "========================================="
-echo "  域名: https://xuan5ai.com"
+echo "  域名: https://$DOMAIN"
 echo "  代码: /var/www/xuanwu"
 echo "  证书: 自动续期"
 echo ""
