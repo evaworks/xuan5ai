@@ -36,8 +36,9 @@ cd /var/www/xuanwu
 
 echo "[3/6] 下载并解压 dist 文件..."
 LATEST_URL="https://github.com/$REPO/releases/download/$VERSION/dist.tar.gz"
-wget -q "$LATEST_URL" -O dist.tar.gz
-tar -xzf dist.tar.gz --strip-components=1
+rm -rf dist.tar.gz *
+wget -q "$LATEST_URL" -O dist.tar.gz || { echo "下载失败，请检查仓库和版本号"; exit 1; }
+tar -xzf dist.tar.gz
 rm -f dist.tar.gz
 
 echo "[4/6] 配置 Nginx 临时站点..."
@@ -54,7 +55,6 @@ server {
 EOF
 
 ln -sf /etc/nginx/sites-available/xuanwu /etc/nginx/sites-enabled/xuanwu
-rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx
 
 echo "[5/6] 配置 HTTPS 证书并更新 Nginx..."
