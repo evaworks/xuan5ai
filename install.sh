@@ -31,11 +31,39 @@ wget -q "$LATEST_URL" -O dist.tar.gz
 tar -xzf dist.tar.gz --strip-components=1
 rm -f dist.tar.gz
 
-echo "[4/6] 配置 Nginx..."
+echo "[4/6] 配置 Nginx 临时站点..."
 cat > /etc/nginx/sites-available/xuanwu <<EOF
 server {
     listen 80;
     server_name $DOMAIN;
+    root /var/www/xuanwu;
+    index index.html;
+    location / {
+        try_files \$uri \$uri/ /index.html;
+    }
+}
+EOF
+
+ln -sf /etc/nginx/sites-available/xuanwu /etc/nginx/sites-enabled/xuanwu
+rm -f /etc/nginx/sites-enabled/default
+nginx -t && systemctl reload nginx
+
+echo "[5/6] 配置 HTTPS 证书并更新 Nginx..."
+certbot certonly --webroot -w /var/www/xuanwu -d "$DOMAIN" --email "$EMAIL" --agree-tos --non-interactive
+
+cat > /etc/nginx/sites-available/xuanwu <<EOF
+server {
+    listen 80;
+    server_name $DOMAIN;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name $DOMAIN;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
 
     root /var/www/xuanwu;
     index index.html;
@@ -54,14 +82,9 @@ server {
 }
 EOF
 
-ln -sf /etc/nginx/sites-available/xuanwu /etc/nginx/sites-enabled/xuanwu
-rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx
 
-echo "[5/6] 配置 HTTPS 证书..."
-certbot --nginx -d "$DOMAIN" --email "$EMAIL" --agree-tos --non-interactive --redirect
-
-echo "[6/6] 配置自动续期..."
+echo "[6/6] 配置证书自动续期..."
 systemctl enable certbot.timer
 systemctl start certbot.timer
 
