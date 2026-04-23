@@ -2,10 +2,10 @@
 
 set -e
 
-REPO=${1:-"yourusername/xuanwu-site"}
-VERSION=${2:-"latest"}
-DOMAIN=${3:-"xuan5ai.com"}
-EMAIL=${4:-"admin@xuan5ai.com"}
+REPO="evaworks/xuan5ai"
+VERSION="latest"
+DOMAIN="xuan5ai.com"
+EMAIL="admin@xuan5ai.com"
 
 if [ "$(id -u)" -ne 0 ]; then
    echo "请使用 sudo 或 root 运行此脚本"
@@ -70,6 +70,4 @@ echo "========================================="
 echo "  部署完成！"
 echo "========================================="
 echo "  域名: https://$DOMAIN"
-echo "  代码: /var/www/xuanwu"
-echo "  证书: 自动续期"
 echo ""
