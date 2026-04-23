@@ -1,16 +1,35 @@
-# React + Vite
+# 玄武科技官网
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 一键部署
 
-Currently, two official plugins are available:
+```bash
+curl -sL https://raw.githubusercontent.com/evaworks/xuan5ai/main/install.sh | sudo bash
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 发布新版本
 
-## React Compiler
+1. 本地构建
+```bash
+npm run build
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. 打包
+```bash
+cd dist
+tar -czf dist.tar.gz *
+```
 
-## Expanding the ESLint configuration
+3. 在 GitHub Releases 页面创建新版本，上传 `dist.tar.gz`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 开发
+
+```bash
+npm install
+npm run dev
+```
+
+## 构建
+
+```bash
+npm run build
+```
