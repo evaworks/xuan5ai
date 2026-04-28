@@ -34,6 +34,10 @@ echo "[2/6] 创建网站目录..."
 mkdir -p /var/www/xuanwu
 cd /var/www/xuanwu
 
+if [ "$VERSION" = "latest" ] || [ -z "$VERSION" ]; then
+    VERSION=$(curl -sL https://api.github.com/repos/$REPO/releases/latest | grep -o '"tag_name": "[^"]*' | cut -d'"' -f4)
+fi
+
 echo "[3/6] 下载并解压 dist 文件..."
 LATEST_URL="https://github.com/$REPO/releases/download/$VERSION/dist.tar.gz"
 rm -rf *
