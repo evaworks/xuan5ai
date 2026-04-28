@@ -41,7 +41,7 @@ fi
 echo "[3/6] 下载并解压 dist 文件..."
 LATEST_URL="https://github.com/$REPO/releases/download/$VERSION/dist.tar.gz"
 rm -rf *
-wget -q "$LATEST_URL" -O dist.tar.gz || { echo "下载失败，请检查仓库和版本号"; exit 1; }
+wget -L -q "$LATEST_URL" -O dist.tar.gz || { echo "下载失败，请检查仓库和版本号"; exit 1; }
 tar -xzf dist.tar.gz
 rm -f dist.tar.gz
 
