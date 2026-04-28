@@ -265,6 +265,7 @@ function App() {
                       <div className="flex flex-col gap-1">
                         <a href="https://t.me/vipac0" target="_blank" rel="noopener noreferrer" className="text-xuanwu-text hover:text-xuanwu-accent transition-colors">@vipac0</a>
                         <a href="https://t.me/vipguobao" target="_blank" rel="noopener noreferrer" className="text-xuanwu-text hover:text-xuanwu-accent transition-colors">@vipguobao</a>
+                        <a href="https://t.me/JJ2026just" target="_blank" rel="noopener noreferrer" className="text-xuanwu-text hover:text-xuanwu-accent transition-colors">@JJ2026just</a>
                       </div>
                     </div>
                   </div>
