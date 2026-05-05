@@ -32,6 +32,8 @@ fi
 
 echo "[2/6] 创建网站目录..."
 mkdir -p /var/www/xuanwu
+chown -R www-data:www-data /var/www/xuanwu
+chmod -R 755 /var/www/xuanwu
 cd /var/www/xuanwu
 
 if [ "$VERSION" = "latest" ] || [ -z "$VERSION" ]; then
@@ -43,7 +45,8 @@ LATEST_URL="https://github.com/$REPO/releases/download/$VERSION/dist.tar.gz"
 rm -rf *
 wget -L -q "$LATEST_URL" -O dist.tar.gz || { echo "下载失败，请检查仓库和版本号"; exit 1; }
 tar -xzf dist.tar.gz
-rm -f dist.tar.gz
+mv dist/* .
+rm -rf dist dist.tar.gz
 
 echo "[4/6] 配置 Nginx 临时站点..."
 cat > /etc/nginx/sites-available/xuanwu <<EOF
@@ -85,7 +88,7 @@ server {
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
 
     location / {
-        try_files \$uri \$uri/ /index.html;
+        try_files $uri $uri/ =404;
     }
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
