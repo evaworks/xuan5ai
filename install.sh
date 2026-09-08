@@ -93,9 +93,9 @@ ln -sf /etc/nginx/sites-available/xuanwu /etc/nginx/sites-enabled/xuanwu
 nginx -t && systemctl reload nginx
 
 echo "[5/6] 配置 HTTPS 证书并更新 Nginx..."
-if ! certbot certonly --webroot -w /var/www/xuanwu $DOMAIN_ARGS --email "$EMAIL" --agree-tos --non-interactive; then
+if ! certbot certonly --webroot -w /var/www/xuanwu $DOMAIN_ARGS --cert-name "$CERT_DOMAIN" --expand --email "$EMAIL" --agree-tos --non-interactive; then
     echo "webroot 验证失败，尝试 --nginx 插件..."
-    certbot --nginx $DOMAIN_ARGS --email "$EMAIL" --agree-tos --non-interactive --redirect
+    certbot --nginx $DOMAIN_ARGS --cert-name "$CERT_DOMAIN" --expand --email "$EMAIL" --agree-tos --non-interactive --redirect
 fi
 
 cat > /etc/nginx/sites-available/xuanwu <<EOF
