@@ -6,6 +6,26 @@ DOMAIN=${1:-"xuan5ai.com"}
 EMAIL=${2:-"admin@xuan5ai.com"}
 REPO=${3:-"evaworks/xuan5ai"}
 VERSION=${4:-"latest"}
+DOMAIN=$(echo "$DOMAIN" | sed -e 's#^https\?://##' -e 's#/.*$##')
+if [[ "$DOMAIN" == www.* ]] && [[ "$(echo "$DOMAIN" | tr -cd '.' | wc -c)" -eq 2 ]]; then
+    APEX="${DOMAIN#www.}"
+    WWW="$DOMAIN"
+elif [[ "$(echo "$DOMAIN" | tr -cd '.' | wc -c)" -eq 1 ]]; then
+    APEX="$DOMAIN"
+    WWW="www.$DOMAIN"
+else
+    APEX="$DOMAIN"
+    WWW="$DOMAIN"
+fi
+if [ "$APEX" = "$WWW" ]; then
+    SERVER_NAMES="$APEX"
+    DOMAIN_ARGS="-d $APEX"
+    CERT_DOMAIN="$APEX"
+else
+    SERVER_NAMES="$APEX $WWW"
+    DOMAIN_ARGS="-d $APEX -d $WWW"
+    CERT_DOMAIN="$APEX"
+fi
 
 if [ "$(id -u)" -ne 0 ]; then
    echo "请使用 sudo 或 root 运行此脚本"
@@ -49,12 +69,20 @@ mv dist/* .
 rm -rf dist dist.tar.gz
 
 echo "[4/6] 配置 Nginx 临时站点..."
+if [ -f /etc/nginx/sites-available/xuanwu ]; then
+    cp /etc/nginx/sites-available/xuanwu /etc/nginx/sites-available/xuanwu.bak.$(date +%s)
+fi
+rm -f /etc/nginx/sites-enabled/default
 cat > /etc/nginx/sites-available/xuanwu <<EOF
 server {
     listen 80;
-    server_name $DOMAIN;
+    server_name $SERVER_NAMES;
     root /var/www/xuanwu;
     index index.html;
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/xuanwu;
+        allow all;
+    }
     location / {
         try_files \$uri \$uri/ /index.html;
     }
@@ -65,21 +93,28 @@ ln -sf /etc/nginx/sites-available/xuanwu /etc/nginx/sites-enabled/xuanwu
 nginx -t && systemctl reload nginx
 
 echo "[5/6] 配置 HTTPS 证书并更新 Nginx..."
-certbot certonly --webroot -w /var/www/xuanwu -d "$DOMAIN" --email "$EMAIL" --agree-tos --non-interactive
+if ! certbot certonly --webroot -w /var/www/xuanwu $DOMAIN_ARGS --email "$EMAIL" --agree-tos --non-interactive; then
+    echo "webroot 验证失败，尝试 --nginx 插件..."
+    certbot --nginx $DOMAIN_ARGS --email "$EMAIL" --agree-tos --non-interactive --redirect
+fi
 
 cat > /etc/nginx/sites-available/xuanwu <<EOF
 server {
     listen 80;
-    server_name $DOMAIN;
+    server_name $SERVER_NAMES;
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/xuanwu;
+        allow all;
+    }
     return 301 https://\$host\$request_uri;
 }
 
 server {
     listen 443 ssl http2;
-    server_name $DOMAIN;
+    server_name $SERVER_NAMES;
 
-    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/$CERT_DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$CERT_DOMAIN/privkey.pem;
 
     root /var/www/xuanwu;
     index index.html;
@@ -88,7 +123,7 @@ server {
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml;
 
     location / {
-        try_files $uri $uri/ =404;
+        try_files \$uri \$uri/ /index.html;
     }
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
@@ -108,5 +143,6 @@ echo ""
 echo "========================================="
 echo "  部署完成！"
 echo "========================================="
-echo "  域名: https://$DOMAIN"
+echo "  域名: https://$APEX"
+[ "$APEX" != "$WWW" ] && echo "  域名: https://$WWW"
 echo ""
